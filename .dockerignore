@@ -1,0 +1,10 @@
+# Ignora todo por defecto
+*
+
+# Pero permite la carpeta target completa
+!target/
+
+# Opcionalmente, permite solo los archivos que realmente necesitas
+!target/*-runner*
+!target/lib/*
+!target/quarkus-app/*
