@@ -1,8 +1,12 @@
 package com.glara.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users", indexes = {
@@ -21,11 +25,12 @@ public class User {
     private String email;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Account> accounts;
+    @JsonBackReference
+    private Set<Account> accounts;
 
     public User() {}
 
-    public User( String name, String email, List<Account> accounts) {
+    public User( String name, String email, Set<Account> accounts) {
         this.name = name;
         this.email = email;
         this.accounts = accounts;
@@ -48,11 +53,11 @@ public class User {
         this.email = email;
     }
 
-    public List<Account> getAccounts() {
+    public Set<Account> getAccounts() {
         return accounts;
     }
 
-    public void setAccounts(List<Account> accounts) {
+    public void setAccounts(Set<Account> accounts) {
         this.accounts = accounts;
     }
 

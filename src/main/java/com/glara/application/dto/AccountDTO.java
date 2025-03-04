@@ -8,5 +8,6 @@ import java.math.BigDecimal;
 public record AccountDTO(
         Long id,
         String name,
-        BigDecimal currentBalance
+        BigDecimal currentBalance,
+        Long accountTypeId, Long userId
 ) {}

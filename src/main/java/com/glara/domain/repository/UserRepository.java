@@ -9,7 +9,6 @@ import jakarta.ws.rs.NotFoundException;
 import org.hibernate.reactive.mutiny.Mutiny;
 
 import java.util.List;
-import java.util.Optional;
 
 @ApplicationScoped
 public class UserRepository {
@@ -21,11 +20,9 @@ public class UserRepository {
     public Uni<User> findById(Long id) {
         return sessionFactory.withSession(session ->
                 session.find(User.class, id)
-                        .onItem().ifNotNull().call(user -> session.fetch(user.getAccounts()))
-                        .onItem().ifNull().failWith(() -> new NotFoundException("Usuario no encontrado"))
+                        .onItem().call(user -> user != null ? session.fetch(user.getAccounts()) : Uni.createFrom().nullItem())
         );
     }
-
 
 
     public Uni<List<UserDTO>> findAll() {

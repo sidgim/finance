@@ -2,11 +2,13 @@ package com.glara.application.service;
 
 
 import com.glara.application.dto.UserDTO;
+import com.glara.application.dto.UserDetailsDTO;
 import com.glara.domain.model.User;
 import com.glara.domain.repository.UserRepository;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.NotFoundException;
 
 import java.util.List;
 
@@ -17,9 +19,9 @@ public class UserService {
     UserRepository userRepository;
 
     public Uni<User> getUser(Long id) {
-        return userRepository.findById(id);
+        return userRepository.findById(id)
+                .onItem().ifNull().failWith(() -> new NotFoundException("Usuario no encontrado"));
     }
-
 
     public Uni<User> getUserByEmail(String email) {
         return userRepository.findByEmail(email);

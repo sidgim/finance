@@ -24,6 +24,18 @@ public class Subcategory {
     @Column(nullable = false, length =  500)
     private String description;
 
+
+    public Subcategory(Long id, Category category, String name, String description) {
+        this.id = id;
+        this.category = category;
+        this.name = name;
+        this.description = description;
+    }
+
+    public Subcategory() {
+
+    }
+
     public Long getId() {
         return id;
     }

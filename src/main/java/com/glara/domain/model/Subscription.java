@@ -1,8 +1,10 @@
 package com.glara.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 
@@ -17,7 +19,7 @@ enum FrequencyType {
         @Index(name = "idx_subscription_name", columnList = "name"),
         @Index(name = "idx_subscription_frequency_type", columnList = "frequency_type"),
         @Index(name = "idx_subscription_amount", columnList = "amount"),
-        @Index(name = "idx_subscription_next_payment_date", columnList = "next_payment_date")
+        @Index(name = "idx_subscription_next_payment", columnList = "next_payment")
 })
 public class Subscription {
 
@@ -27,10 +29,11 @@ public class Subscription {
 
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false, foreignKey = @ForeignKey(name = "fk_account_subscription"))
+    @JsonBackReference("account-subscription")
     private Account account;
 
-
-    @ManyToOne
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="subcategory_id", nullable = false, foreignKey = @ForeignKey(name = "fk_subcategory_subscription"))
     private Subcategory subcategory;
 
@@ -45,7 +48,22 @@ public class Subscription {
     private BigDecimal amount;
 
     @Column(name = "next_payment", nullable = false)
-    private Date nextPaymentDate;
+    private LocalDate nextPaymentDate;
+
+
+    public Subscription(long id, Account account, Subcategory subcategory, String name, FrequencyType frequencyType, BigDecimal amount, LocalDate nextPaymentDate) {
+        this.id = id;
+        this.account = account;
+        this.subcategory = subcategory;
+        this.name = name;
+        this.frequencyType = frequencyType;
+        this.amount = amount;
+        this.nextPaymentDate = nextPaymentDate;
+    }
+
+    public Subscription() {
+
+    }
 
     public long getId() {
         return id;
@@ -95,11 +113,11 @@ public class Subscription {
         this.amount = amount;
     }
 
-    public Date getNextPaymentDate() {
+    public LocalDate getNextPaymentDate() {
         return nextPaymentDate;
     }
 
-    public void setNextPaymentDate(Date nextPaymentDate) {
+    public void setNextPaymentDate(LocalDate nextPaymentDate) {
         this.nextPaymentDate = nextPaymentDate;
     }
 }

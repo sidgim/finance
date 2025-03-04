@@ -13,6 +13,16 @@ public class AccountType{
     @Column(nullable = false, length = 100)
     private String name;
 
+    public AccountType(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public AccountType() {
+
+    }
+
+
     public Long getId() {
         return id;
     }

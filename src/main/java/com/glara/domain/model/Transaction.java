@@ -1,5 +1,6 @@
 package com.glara.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -26,11 +27,13 @@ public class Transaction {
 
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false, foreignKey = @ForeignKey(name = "fk_transaction_account"))
+    @JsonBackReference("account-transaction")
     private Account account;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "subcategory_id", foreignKey = @ForeignKey(name = "fk_transaction_subcategory"))
-    private Subcategory subcategoria;
+    private Subcategory subcategory;
 
     @Column(nullable = false)
     private LocalDate fecha;
@@ -61,12 +64,12 @@ public class Transaction {
         this.account = account;
     }
 
-    public Subcategory getSubcategoria() {
-        return subcategoria;
+    public Subcategory getSubcategory() {
+        return subcategory;
     }
 
-    public void setSubcategoria(Subcategory subcategoria) {
-        this.subcategoria = subcategoria;
+    public void setSubcategory(Subcategory subcategory) {
+        this.subcategory = subcategory;
     }
 
     public LocalDate getFecha() {

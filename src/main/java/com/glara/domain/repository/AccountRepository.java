@@ -1,9 +1,11 @@
 package com.glara.domain.repository;
 
+import com.glara.application.dto.AccountDTO;
 import com.glara.domain.model.Account;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.WebApplicationException;
 import org.hibernate.reactive.mutiny.Mutiny;
 
 import java.util.List;
@@ -14,56 +16,85 @@ public class AccountRepository {
     @Inject
     Mutiny.SessionFactory sessionFactory;
 
-    // 🔍 Obtener cuenta por ID de forma segura
     public Uni<Account> findById(Long id) {
-        return sessionFactory.withSession(session -> session.find(Account.class, id))
-                .onItem().ifNull().failWith(() -> new IllegalArgumentException("Cuenta inexistente"));
+        return sessionFactory.withSession(session -> session.createQuery(
+                        "SELECT a FROM Account a " +
+                                "LEFT JOIN FETCH a.user u " +
+                                "LEFT JOIN FETCH u.accounts " +
+                                "LEFT JOIN FETCH a.accountType " +
+                                "LEFT JOIN FETCH a.subscriptions " +
+                                "LEFT JOIN FETCH a.transactions " +
+                                "WHERE a.id = :id AND a.deleted = false",
+                        Account.class
+                ).setParameter("id", id)
+                .getSingleResultOrNull());
     }
 
-    // 🔍 Obtener todas las cuentas
-    public Uni<List<Account>> findAll() {
+    public Uni<List<Account>> findAllAccountsByUserId(Long userId) {
         return sessionFactory.withSession(session ->
-                session.createSelectionQuery("FROM Account", Account.class)
+                session.createQuery(
+                                "SELECT a FROM Account a " +
+                                        "LEFT JOIN FETCH a.user u " +
+                                        "LEFT JOIN FETCH a.accountType " +
+                                        "LEFT JOIN FETCH a.subscriptions " +
+                                        "LEFT JOIN FETCH a.transactions " +
+                                        "WHERE u.id = :userId AND a.deleted = false",
+                                Account.class
+                        ).setParameter("userId", userId)
                         .getResultList()
         );
     }
 
-    // 🔍 Buscar cuentas por usuario
-    public Uni<List<Account>> findByUserId(Long userId) {
+    public Uni<List<Account>> findAllAccounts() {
         return sessionFactory.withSession(session ->
-                session.createSelectionQuery("FROM Account a WHERE a.user.id = :userId", Account.class)
-                        .setParameter("userId", userId)
-                        .getResultList()
+                session.createQuery(
+                        "SELECT a FROM Account a " +
+                                "LEFT JOIN FETCH a.user u " +  // Cargar el usuario
+                                "LEFT JOIN FETCH a.accountType " +
+                                "LEFT JOIN FETCH a.subscriptions " +
+                                "LEFT JOIN FETCH a.transactions " +
+                                "WHERE a.deleted = false",
+                        Account.class
+                ).getResultList()
         );
     }
 
-    // ✏️ Actualizar cuenta (nombre y saldo) de forma segura
-    public Uni<Account> update(Account updatedAccount) {
-        return sessionFactory.withTransaction(session ->
-                session.find(Account.class, updatedAccount.getId())
-                        .onItem().ifNotNull().invoke(account -> {
-                            account.setName(updatedAccount.getName());
-                            account.setCurrentBalance(updatedAccount.getCurrentBalance());
-                        })
-                        .onItem().ifNull().failWith(() -> new IllegalArgumentException("Cuenta no encontrada"))
-        );
+
+    public Uni<Void> update(Account account, Long id) {
+        return sessionFactory.withTransaction(session -> session.find(Account.class, id)
+                .onItem().ifNotNull().invoke(existingAccount -> {
+                    existingAccount.setName(account.getName());
+                    existingAccount.setCurrentBalance(account.getCurrentBalance());
+                })
+                .onItem().ifNull().failWith(() -> new WebApplicationException("Account not found", 404))
+        ).replaceWithVoid();
     }
 
-    // ➕ Guardar cuenta
-    public Uni<Void> persist(Account account) {
-        return sessionFactory.withTransaction(session -> session.persist(account));
-    }
 
-    // ❌ Eliminar cuenta por ID
-    public Uni<Integer> deleteById(Long id) {
+    public Uni<Void> createAccount(AccountDTO dto) {
         return sessionFactory.withTransaction(session ->
-                session.createMutationQuery("DELETE FROM Account WHERE id = :id")
-                        .setParameter("id", id)
+                session.createNativeQuery(
+                                "INSERT INTO account (name, currentbalance, account_type_id, user_id) " +
+                                        "VALUES (:name, :currentBalance, :accountType, :userId)")
+                        .setParameter("name", dto.name())
+                        .setParameter("currentBalance", dto.currentBalance())
+                        .setParameter("accountType", dto.accountTypeId())
+                        .setParameter("userId", dto.userId())
                         .executeUpdate()
+        ).replaceWithVoid();
+    }
+
+
+    public Uni<Boolean> deleteById(Long id) {
+        return sessionFactory.withTransaction(session ->
+                session.find(Account.class, id)
+                        .onItem().ifNull().failWith(() -> new WebApplicationException("Account not found", 404))
+                        .onItem().ifNotNull().invoke(account -> account.setDeleted(true))
+                        .replaceWith(Uni.createFrom().item(true))
         );
     }
 
-    // 🔢 Contar total de cuentas
+
     public Uni<Long> count() {
         return sessionFactory.withSession(session ->
                 session.createSelectionQuery("SELECT COUNT(a) FROM Account a", Long.class)
@@ -71,7 +102,6 @@ public class AccountRepository {
         );
     }
 
-    // 📜 Obtener cuentas con paginación optimizada
     public Uni<List<Account>> findAllPaginated(int page, int size) {
         return sessionFactory.withSession(session ->
                 session.createSelectionQuery("FROM Account", Account.class)

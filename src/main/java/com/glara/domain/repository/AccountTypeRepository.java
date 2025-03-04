@@ -5,6 +5,7 @@ import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.WebApplicationException;
 import org.hibernate.reactive.mutiny.Mutiny;
 
 import java.util.List;
@@ -23,9 +24,8 @@ public class AccountTypeRepository {
 
     public Uni<AccountType> findById(Long id) {
         return sessionFactory.withSession(session -> session.find(AccountType.class, id))
-                .onItem().ifNull().failWith(() -> new NotFoundException("Tipo de cuenta no encontrada"));
+                .onItem().ifNull().failWith(() -> new WebApplicationException("Tipo de cuenta no encontrada", 404));
     }
-
 
     public Uni<Void> persist(AccountType accountType) {
         return sessionFactory.withTransaction(session -> session.persist(accountType));

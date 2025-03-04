@@ -2,7 +2,7 @@ package com.glara.domain.model;
 
 import jakarta.persistence.*;
 
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "category")
@@ -19,9 +19,9 @@ public class Category {
     private String description;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Subcategory> subcategories;
+    private Set<Subcategory> subcategories;
 
-    public Category(Long id, String name, String description, List<Subcategory> subcategories) {
+    public Category(Long id, String name, String description, Set<Subcategory> subcategories) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -54,11 +54,11 @@ public class Category {
         this.description = description;
     }
 
-    public List<Subcategory> getSubcategories() {
+    public Set<Subcategory> getSubcategories() {
         return subcategories;
     }
 
-    public void setSubcategories(List<Subcategory> subcategories) {
+    public void setSubcategories(Set<Subcategory> subcategories) {
         this.subcategories = subcategories;
     }
 }
