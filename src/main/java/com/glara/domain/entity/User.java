@@ -1,14 +1,12 @@
-package com.glara.domain.model;
+package com.glara.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
-import java.util.List;
 import java.util.Set;
 
-@Entity
+@Entity(name = "UserEntity")
 @Table(name = "users", indexes = {
         @Index(name = "idx_user_email", columnList = "email"),
         @Index(name = "idx_user_name", columnList = "name")

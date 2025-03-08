@@ -1,9 +1,9 @@
-package com.glara.domain.model;
+package com.glara.domain.entity;
 
 
 import jakarta.persistence.*;
 
-@Entity
+@Entity(name = "SubcategoryEntity")
 @Table(name = "subcategory", indexes = {
         @Index(name = "idx_subcategory_category_id", columnList = "category_id")
 })

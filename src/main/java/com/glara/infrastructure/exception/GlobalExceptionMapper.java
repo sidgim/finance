@@ -1,5 +1,6 @@
-package com.glara.application.exception;
+package com.glara.infrastructure.exception;
 
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
@@ -22,6 +23,7 @@ public class GlobalExceptionMapper implements ExceptionMapper<Throwable> {
 
         return Response.status(status)
                 .entity(new ErrorResponse(message, status))
+                .type(MediaType.APPLICATION_JSON)
                 .build();
     }
 
@@ -35,5 +37,4 @@ public class GlobalExceptionMapper implements ExceptionMapper<Throwable> {
         }
     }
 }
-
 

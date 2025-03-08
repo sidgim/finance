@@ -1,8 +1,8 @@
-package com.glara.domain.model;
+package com.glara.domain.entity;
 
 import jakarta.persistence.*;
 
-@Entity
+@Entity(name = "AccountTypeEntity")
 @Table(name = "account_type")
 public class AccountType{
 

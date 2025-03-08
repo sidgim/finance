@@ -2,9 +2,8 @@ package com.glara.application.service;
 
 
 import com.glara.application.dto.UserDTO;
-import com.glara.application.dto.UserDetailsDTO;
-import com.glara.domain.model.User;
-import com.glara.domain.repository.UserRepository;
+import com.glara.domain.entity.User;
+import com.glara.infrastructure.persistence.repository.UserRepository;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

@@ -1,18 +1,17 @@
-package com.glara.domain.model;
+package com.glara.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 
 
 enum FrequencyType {
     DAILY, WEEKLY, MONTHLY, YEARLY;
 }
 
-@Entity
+@Entity(name = "SubscriptionEntity")
 @Table(name = "subscription", indexes = {
         @Index(name = "idx_subscription_account_id", columnList = "account_id"),
         @Index(name = "idx_subscription_subcategory_id", columnList = "subcategory_id"),

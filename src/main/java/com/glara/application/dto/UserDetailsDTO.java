@@ -3,7 +3,6 @@ package com.glara.application.dto;
 import java.math.BigDecimal;
 import java.security.Timestamp;
 import java.time.LocalDate;
-import java.util.Date;
 
 public record UserDetailsDTO(Long userId,
                              String userName,

@@ -1,10 +1,7 @@
 package com.glara.application.dto;
 
-import com.glara.domain.model.Account;
-import com.glara.domain.model.User;
+import com.glara.domain.entity.User;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
-
-import java.util.List;
 
 @Schema(description = "DTO que representa un usuario.")
 public record UserDTO(Long id, String name, String email) {

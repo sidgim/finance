@@ -1,4 +1,4 @@
-package com.glara.domain.model;
+package com.glara.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -11,7 +11,7 @@ enum TransactionType {
     INGRESO, GASTO;
 }
 
-@Entity
+@Entity(name = "TransactionEntity")
 @Table(name = "transaction", indexes = {
         @Index(name = "idx_transaction_account_id", columnList = "account_id"),
         @Index(name = "idx_transaction_subcategory_id", columnList = "subcategory_id"),

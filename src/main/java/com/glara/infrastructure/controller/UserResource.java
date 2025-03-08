@@ -1,8 +1,8 @@
-package com.glara.infrastructure.rest;
+package com.glara.infrastructure.controller;
 
 
 import com.glara.application.service.UserService;
-import com.glara.domain.model.User;
+import com.glara.domain.entity.User;
 import io.smallrye.mutiny.Uni;
 import jakarta.ws.rs.Path;
 import jakarta.inject.Inject;

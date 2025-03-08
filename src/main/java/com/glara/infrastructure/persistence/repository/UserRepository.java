@@ -1,7 +1,7 @@
-package com.glara.domain.repository;
+package com.glara.infrastructure.persistence.repository;
 
 import com.glara.application.dto.UserDTO;
-import com.glara.domain.model.User;
+import com.glara.domain.entity.User;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -83,4 +83,6 @@ public class UserRepository {
                         .executeUpdate()
         );
     }
+
+
 }

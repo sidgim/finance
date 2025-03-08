@@ -1,8 +1,9 @@
-package com.glara.domain.model;
+package com.glara.domain.entity;
 
 import jakarta.persistence.*;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "category")
@@ -19,9 +20,9 @@ public class Category {
     private String description;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Subcategory> subcategories;
+    private List<Subcategory> subcategories = new ArrayList<>();;
 
-    public Category(Long id, String name, String description, Set<Subcategory> subcategories) {
+    public Category(Long id, String name, String description, List<Subcategory> subcategories) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -54,11 +55,11 @@ public class Category {
         this.description = description;
     }
 
-    public Set<Subcategory> getSubcategories() {
+    public List<Subcategory> getSubcategories() {
         return subcategories;
     }
 
-    public void setSubcategories(Set<Subcategory> subcategories) {
+    public void setSubcategories(List<Subcategory> subcategories) {
         this.subcategories = subcategories;
     }
 }

@@ -1,10 +1,9 @@
-package com.glara.domain.repository;
+package com.glara.infrastructure.persistence.repository;
 
-import com.glara.domain.model.AccountType;
+import com.glara.domain.entity.AccountType;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.WebApplicationException;
 import org.hibernate.reactive.mutiny.Mutiny;
 
